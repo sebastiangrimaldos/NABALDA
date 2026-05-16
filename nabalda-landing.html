@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nabalda — We help creators build thriving worlds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paramo-dark: #1C2B26;
+    --paramo-mid: #2C3028;
+    --frailejón: #4A5240;
+    --musgo: #7A8C5E;
+    --agua: #5C8B7A;
+    --rio: #8BBCB0;
+    --paja: #B5A882;
+    --niebla: #D4C5A0;
+    --laguna: #F5F2EA;
+    --flor: #E8C87A;
+    --tierra: #3D3D35;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paramo-dark);
+    color: var(--laguna);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 4rem;
+    background: transparent;
+    transition: background 0.4s;
+  }
+  nav.scrolled { background: rgba(28,43,38,0.95); backdrop-filter: blur(12px); }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 22px;
+    letter-spacing: 0.25em;
+    color: var(--laguna);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--niebla);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--flor); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 4rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 30%, rgba(92,139,122,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 20% 70%, rgba(122,140,94,0.06) 0%, transparent 50%);
+  }
+
+  /* animated mist particles */
+  .mist {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .mist-layer {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(212,197,160,0.02) 30%, rgba(92,139,122,0.03) 50%, transparent 70%);
+    animation: drift 18s ease-in-out infinite;
+  }
+  .mist-layer:nth-child(2) { animation-delay: -6s; animation-duration: 24s; opacity: 0.6; }
+  .mist-layer:nth-child(3) { animation-delay: -12s; animation-duration: 20s; opacity: 0.4; }
+
+  @keyframes drift {
+    0% { transform: translateX(-30%); }
+    50% { transform: translateX(0%); }
+    100% { transform: translateX(-30%); }
+  }
+
+  /* frailejón silhouettes SVG */
+  .frailejones-bg {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 45%;
+    opacity: 0.07;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 9px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--musgo);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(52px, 8vw, 110px);
+    line-height: 0.92;
+    letter-spacing: 0.04em;
+    color: var(--laguna);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--rio);
+  }
+
+  .hero-tagline {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--niebla);
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+  }
+
+  .hero-divider {
+    width: 60px;
+    height: 0.5px;
+    background: var(--musgo);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s 0.9s forwards;
+  }
+
+  .hero-thesis {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(16px, 2vw, 20px);
+    line-height: 1.6;
+    color: var(--paja);
+    max-width: 640px;
+    opacity: 0;
+    animation: fadeUp 1s 1.1s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SCROLL INDICATOR */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 1s 1.5s forwards;
+  }
+  .scroll-hint span {
+    font-size: 8px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--frailejón);
+    writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 0.5px;
+    height: 48px;
+    background: linear-gradient(to bottom, var(--musgo), transparent);
+    animation: pulse-line 2s ease-in-out infinite;
+  }
+  @keyframes pulse-line {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* SECTIONS */
+  section { padding: 8rem 4rem; }
+
+  .section-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 9px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--musgo);
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 0.5px;
+    background: var(--frailejón);
+  }
+
+  /* ABOUT */
+  .about {
+    background: var(--paramo-mid);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+  }
+
+  .about-left {}
+
+  .about-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(36px, 4vw, 54px);
+    line-height: 1.1;
+    letter-spacing: 0.03em;
+    color: var(--laguna);
+    margin-bottom: 2rem;
+  }
+
+  .about-body {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--niebla);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  .about-name-box {
+    border-left: 1px solid var(--agua);
+    padding-left: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .about-name-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--rio);
+    margin-bottom: 0.5rem;
+  }
+  .about-name-body {
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--paja);
+    letter-spacing: 0.03em;
+  }
+
+  /* STATS */
+  .about-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .stat-row {
+    border-top: 0.5px solid var(--frailejón);
+    padding: 2rem 0;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  .stat-row:last-child { border-bottom: 0.5px solid var(--frailejón); }
+
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 42px;
+    line-height: 1;
+    color: var(--flor);
+    letter-spacing: 0.02em;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--niebla);
+    letter-spacing: 0.05em;
+    padding-top: 8px;
+  }
+
+  /* THESIS */
+  .thesis {
+    background: var(--paramo-dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .thesis-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1.3;
+    color: var(--laguna);
+    max-width: 900px;
+    margin-bottom: 4rem;
+    letter-spacing: 0.02em;
+  }
+
+  .thesis-quote span { color: var(--rio); }
+
+  .thesis-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 0.5px solid var(--frailejón);
+  }
+
+  .thesis-col {
+    border-right: 0.5px solid var(--frailejón);
+    padding: 2.5rem 2rem;
+  }
+  .thesis-col:last-child { border-right: none; }
+
+  .thesis-col-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 11px;
+    color: var(--frailejón);
+    letter-spacing: 0.2em;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .thesis-col-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 20px;
+    color: var(--paja);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .thesis-col-body {
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--frailejón);
+    color: #7A8C6E;
+    letter-spacing: 0.03em;
+  }
+
+  /* FOCUS */
+  .focus {
+    background: var(--tierra);
+  }
+
+  .focus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--frailejón);
+    margin-top: 1rem;
+  }
+
+  .focus-card {
+    background: var(--tierra);
+    padding: 3rem 2.5rem;
+    transition: background 0.4s;
+    cursor: default;
+  }
+
+  .focus-card:hover { background: var(--paramo-mid); }
+
+  .focus-icon {
+    width: 36px;
+    height: 0.5px;
+    background: var(--flor);
+    margin-bottom: 2rem;
+    transition: width 0.4s;
+  }
+  .focus-card:hover .focus-icon { width: 60px; }
+
+  .focus-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 22px;
+    color: var(--laguna);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .focus-body {
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--paja);
+    letter-spacing: 0.03em;
+  }
+
+  /* GP */
+  .gp {
+    background: var(--paramo-mid);
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 6rem;
+    align-items: start;
+  }
+
+  .gp-left {}
+
+  .gp-label-big {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(36px, 4vw, 54px);
+    line-height: 1.1;
+    color: var(--laguna);
+    margin-bottom: 2.5rem;
+  }
+
+  .gp-bio {
+    font-size: 14px;
+    line-height: 2;
+    color: var(--niebla);
+    letter-spacing: 0.025em;
+    margin-bottom: 2rem;
+  }
+
+  .gp-tag {
+    display: inline-block;
+    border: 0.5px solid var(--musgo);
+    color: var(--musgo);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    margin: 4px 4px 4px 0;
+  }
+
+  .gp-right {
+    padding-top: 1rem;
+  }
+
+  .gp-principle {
+    border-top: 0.5px solid var(--frailejón);
+    padding: 1.75rem 0;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .gp-principle:last-child { border-bottom: 0.5px solid var(--frailejón); }
+
+  .gp-principle-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--flor);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  .gp-principle-text {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--niebla);
+    letter-spacing: 0.02em;
+  }
+
+  .gp-principle-text strong {
+    font-weight: 400;
+    color: var(--paja);
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-style: italic;
+    margin-bottom: 0.25rem;
+  }
+
+  /* MANIFESTO */
+  .manifesto {
+    background: var(--paramo-dark);
+    text-align: center;
+    padding: 10rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .manifesto::before {
+    content: 'NABALDA';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(80px, 18vw, 220px);
+    letter-spacing: 0.15em;
+    color: rgba(74,82,64,0.06);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .manifesto-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(20px, 3vw, 34px);
+    line-height: 1.7;
+    color: var(--laguna);
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .manifesto-text em { color: var(--rio); font-style: normal; }
+
+  .manifesto-source {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 9px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--frailejón);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* CTA */
+  .cta {
+    background: var(--frailejón);
+    padding: 7rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 4rem;
+  }
+
+  .cta-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(32px, 4vw, 52px);
+    line-height: 1.1;
+    color: var(--laguna);
+    letter-spacing: 0.03em;
+  }
+
+  .cta-btn {
+    display: inline-block;
+    border: 0.5px solid var(--laguna);
+    color: var(--laguna);
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    padding: 1.2rem 3rem;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+    white-space: nowrap;
+  }
+  .cta-btn:hover { background: var(--laguna); color: var(--paramo-dark); }
+
+  /* FOOTER */
+  footer {
+    background: var(--paramo-mid);
+    padding: 3rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 0.5px solid var(--frailejón);
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 18px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--paja);
+  }
+
+  .footer-info {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--frailejón);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1.5rem 2rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 2rem; }
+    .hero { padding: 0 2rem 5rem; }
+    .about, .gp { grid-template-columns: 1fr; gap: 3rem; }
+    .thesis-grid { grid-template-columns: 1fr 1fr; }
+    .focus-grid { grid-template-columns: 1fr; }
+    .cta { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    .footer-info { text-align: center; }
+    .scroll-hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Nabalda</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#thesis">Thesis</a></li>
+    <li><a href="#focus">Focus</a></li>
+    <li><a href="#gp">GP</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="mist">
+    <div class="mist-layer"></div>
+    <div class="mist-layer"></div>
+    <div class="mist-layer"></div>
+  </div>
+
+  <!-- frailejón silhouettes -->
+  <svg class="frailejones-bg" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <g fill="var(--musgo)">
+      <!-- repeating frailejón shapes -->
+      <ellipse cx="80" cy="360" rx="18" ry="60"/>
+      <ellipse cx="80" cy="300" rx="32" ry="18"/>
+      <ellipse cx="200" cy="370" rx="14" ry="50"/>
+      <ellipse cx="200" cy="320" rx="28" ry="15"/>
+      <ellipse cx="320" cy="355" rx="20" ry="65"/>
+      <ellipse cx="320" cy="290" rx="36" ry="20"/>
+      <ellipse cx="440" cy="375" rx="12" ry="45"/>
+      <ellipse cx="440" cy="330" rx="24" ry="14"/>
+      <ellipse cx="560" cy="360" rx="18" ry="58"/>
+      <ellipse cx="560" cy="302" rx="34" ry="19"/>
+      <ellipse cx="680" cy="370" rx="15" ry="52"/>
+      <ellipse cx="680" cy="318" rx="30" ry="16"/>
+      <ellipse cx="800" cy="358" rx="19" ry="62"/>
+      <ellipse cx="800" cy="296" rx="35" ry="20"/>
+      <ellipse cx="920" cy="372" rx="13" ry="48"/>
+      <ellipse cx="920" cy="324" rx="26" ry="15"/>
+      <ellipse cx="1040" cy="362" rx="17" ry="56"/>
+      <ellipse cx="1040" cy="306" rx="32" ry="18"/>
+      <ellipse cx="1160" cy="368" rx="14" ry="50"/>
+      <ellipse cx="1160" cy="318" rx="28" ry="16"/>
+      <ellipse cx="1280" cy="356" rx="20" ry="64"/>
+      <ellipse cx="1280" cy="292" rx="36" ry="21"/>
+      <ellipse cx="1400" cy="374" rx="12" ry="46"/>
+      <ellipse cx="1400" cy="328" rx="24" ry="13"/>
+    </g>
+  </svg>
+
+  <p class="hero-eyebrow">Toronto · Creative Industries Fund · Pre-Seed</p>
+  <h1 class="hero-title">We help creators<br>build <em>thriving</em><br>worlds.</h1>
+  <p class="hero-tagline">Nabalda — Impact Investment Fund</p>
+  <div class="hero-divider"></div>
+  <p class="hero-thesis">
+    "Based in Toronto, NABALDA invests in Pre-Seed startups building scalable intellectual property within the creative industries — transforming mist into water, capital into culture."
+  </p>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-left">
+    <p class="section-label">About</p>
+    <h2 class="about-heading">Guardians<br>of creative<br>capital.</h2>
+    <p class="about-body">
+      Nabalda is an impact investment fund dedicated to empowering creative industries. We believe creators are architects of culture and innovation. Like the Nabalda plants that nurture vital ecosystems by transforming mist into water, we provide the capital and strategic support needed for creators to build thriving worlds — worlds of art, technology, and social impact.
+    </p>
+    <p class="about-body">
+      The name "Nabalda" comes from the Kogi people's word for the frailejón — a plant of the high páramo that captures the mist and releases it gradually, feeding rivers and life below. We are that alchemy: patient, deliberate, transformative.
+    </p>
+    <div class="about-name-box">
+      <p class="about-name-title">Emparamarse</p>
+      <p class="about-name-body">To honor a territory. To adore a lagoon. To greet a forest of mosses, lichens, rocks, fungi, grasslands, shrubs, frailejones, streams, and pastures. Between the sky and the earth.</p>
+    </div>
+  </div>
+
+  <div class="about-right">
+    <div class="stat-row">
+      <div class="stat-number">$1B+</div>
+      <div class="stat-label">In transactions structured across corporations, startups, and institutional capital globally.</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-number">$5B+</div>
+      <div class="stat-label">Combined valuation of unicorns supported through prior operational roles.</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-number">10M+</div>
+      <div class="stat-label">Users reached across platforms built and scaled by the Nabalda GP.</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-number">3×</div>
+      <div class="stat-label">Triple-bottom-line framework: financial viability, social impact, cultural sustainability.</div>
+    </div>
+  </div>
+</section>
+
+<!-- THESIS -->
+<section class="thesis" id="thesis">
+  <p class="section-label">Investment Thesis</p>
+  <p class="thesis-quote">
+    The next cycle of global growth will be driven not by software as a tool, but by <span>content and intellectual property</span> as strategic assets.
+  </p>
+
+  <div class="thesis-grid">
+    <div class="thesis-col">
+      <span class="thesis-col-num">01</span>
+      <p class="thesis-col-title">Defendable IP</p>
+      <p class="thesis-col-body">We seek assets that can be licensed, expanded, and protected globally — where value resides in rights and brand, not just code.</p>
+    </div>
+    <div class="thesis-col">
+      <span class="thesis-col-num">02</span>
+      <p class="thesis-col-title">Transmedia Scale</p>
+      <p class="thesis-col-body">The potential for a project to leap from a niche (a game, a song, a story) to global markets: merchandise, film, fashion, licensing.</p>
+    </div>
+    <div class="thesis-col">
+      <span class="thesis-col-num">03</span>
+      <p class="thesis-col-title">Intergenerational Value</p>
+      <p class="thesis-col-body">We prioritize business models that generate returns across cycles — financially sustainable, culturally enduring, socially impactful.</p>
+    </div>
+    <div class="thesis-col">
+      <span class="thesis-col-num">04</span>
+      <p class="thesis-col-title">Underrepresented Builders</p>
+      <p class="thesis-col-body">At least 60% of investments allocated to founders from underrepresented backgrounds. Diversity is not a filter — it is our thesis.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOCUS -->
+<section class="focus" id="focus">
+  <p class="section-label">Where We Invest</p>
+
+  <div class="focus-grid">
+    <div class="focus-card">
+      <div class="focus-icon"></div>
+      <h3 class="focus-title">Media Tech</h3>
+      <p class="focus-body">New forms of content distribution and consumption. Platforms that redefine how stories reach audiences at scale.</p>
+    </div>
+    <div class="focus-card">
+      <div class="focus-icon"></div>
+      <h3 class="focus-title">IP-Centric Startups</h3>
+      <p class="focus-body">Companies creating franchises from scratch — animation, comics, transmedia narratives, cultural universes built to last generations.</p>
+    </div>
+    <div class="focus-card">
+      <div class="focus-icon"></div>
+      <h3 class="focus-title">Creative AI</h3>
+      <p class="focus-body">Tools that augment — not replace — the capacity to produce high-quality IP. AI as the new creative infrastructure.</p>
+    </div>
+    <div class="focus-card">
+      <div class="focus-icon"></div>
+      <h3 class="focus-title">Gaming & Worlds</h3>
+      <p class="focus-body">Infrastructure for persistent creative worlds. Games as cultural platforms, not just entertainment products.</p>
+    </div>
+    <div class="focus-card">
+      <div class="focus-icon"></div>
+      <h3 class="focus-title">Creator Economies</h3>
+      <p class="focus-body">Platforms empowering independent creators: subscription content, decentralized marketplaces, direct fan engagement tools.</p>
+    </div>
+    <div class="focus-card">
+      <div class="focus-icon"></div>
+      <h3 class="focus-title">Cultural Preservation Tech</h3>
+      <p class="focus-body">Technologies that protect, digitize, and monetize cultural heritage — bridging ancestral knowledge with modern markets.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GP -->
+<section class="gp" id="gp">
+  <div class="gp-left">
+    <p class="section-label">General Partner</p>
+    <h2 class="gp-label-big">Futures<br>Creator.</h2>
+    <p class="gp-bio">
+      A creative executive who structures transactions exceeding USD 1B, optimizing the financial architecture of global players across corporations, startups, and institutional capital. Engineer of market infrastructures and ecosystems — designing capital flows and bespoke equity solutions that prioritize intergenerational value, financial viability, and strategic risk mitigation.
+    </p>
+    <p class="gp-bio">
+      With operational experience scaling tech giants to $5B+ valuations and 10M+ users, Nabalda applies hyper-growth rigor to transform cultural assets into high-yield global franchises. Based in Toronto. Rooted in Colombia.
+    </p>
+
+    <div style="margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0;">
+      <span class="gp-tag">Solo GP</span>
+      <span class="gp-tag">Toronto</span>
+      <span class="gp-tag">Pre-Seed</span>
+      <span class="gp-tag">Impact</span>
+      <span class="gp-tag">Creative Industries</span>
+      <span class="gp-tag">Angel Investor</span>
+    </div>
+  </div>
+
+  <div class="gp-right">
+    <div class="gp-principle">
+      <div class="gp-principle-dot"></div>
+      <div class="gp-principle-text">
+        <strong>Triple-Bottom-Line Framework</strong>
+        Every investment decision is evaluated through financial viability, social impact, and cultural sustainability simultaneously — not as trade-offs, but as one integrated lens.
+      </div>
+    </div>
+    <div class="gp-principle">
+      <div class="gp-principle-dot"></div>
+      <div class="gp-principle-text">
+        <strong>Sustainable Development via Capital</strong>
+        By harmonizing the incentives of cross-border investors and the public-private sector, Nabalda executes complex operations with precision to foster long-horizon development.
+      </div>
+    </div>
+    <div class="gp-principle">
+      <div class="gp-principle-dot"></div>
+      <div class="gp-principle-text">
+        <strong>Disruptive Ideas → Bankable Businesses</strong>
+        We professionalize creative industries and impact investing — transforming disruptive ideas into scalable, bankable businesses through sophisticated financial modeling.
+      </div>
+    </div>
+    <div class="gp-principle">
+      <div class="gp-principle-dot"></div>
+      <div class="gp-principle-text">
+        <strong>Intergenerational Value</strong>
+        The decisions we make today must create value that outlasts the fund cycle — for communities, for cultures, for the ecosystems of tomorrow.
+      </div>
+    </div>
+    <div class="gp-principle">
+      <div class="gp-principle-dot"></div>
+      <div class="gp-principle-text">
+        <strong>Interconnected System</strong>
+        Nabalda understands it is part of an interconnected system with many stakeholders — investors, founders, communities, cultures. Every capital decision ripples outward.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <p class="manifesto-text">
+    "As the Nabalda plant captures the mist and releases it gradually — feeding rivers, communities, ecosystems — we capture capital and release it with intention, <em>feeding the creative worlds of tomorrow.</em>"
+  </p>
+  <p class="manifesto-source">Nabalda · Kogi · Sierra Nevada de Santa Marta · Colombia</p>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contact">
+  <h2 class="cta-heading">Are you building<br>a thriving world?</h2>
+  <a href="mailto:hello@nabalda.com" class="cta-btn">Get in Touch</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Nabalda</div>
+  <div class="footer-info">
+    Toronto, Canada<br>
+    Creative Industries Fund · Pre-Seed<br>
+    © 2026 Nabalda. All rights reserved.<br>
+    <span style="color: var(--musgo); font-size: 9px; letter-spacing: 0.2em;">nabalda.com</span>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+</script>
+
+</body>
+</html>
